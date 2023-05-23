@@ -1,0 +1,1 @@
+jdbc:mysql://localhost:3306/db_controlinventario?user=root&password=syd123

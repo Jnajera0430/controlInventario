@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="680.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlinventario.inventario.InventarioController">
+    <stylesheets>
+        <URL value="@inventario.css" />
+    </stylesheets>
+   <children>
+      <Pane layoutX="14.0" layoutY="83.0" prefHeight="308.0" prefWidth="232.0">
+         <children>
+            <Label layoutX="13.0" layoutY="130.0" prefHeight="17.0" prefWidth="95.0" text="Cargar archivo:" />
+            <Button fx:id="btnCargaArch" layoutX="107.0" layoutY="126.0" mnemonicParsing="false" onAction="#eventCargaDeArch" prefHeight="25.0" prefWidth="102.0" text="cargar archivo..." />
+            <Button fx:id="btnSubirArch" layoutX="9.0" layoutY="194.0" mnemonicParsing="false" onAction="#eventSubirArch" prefHeight="25.0" prefWidth="86.0" text="subir..." />
+            <Button fx:id="btnLimpiarForm" layoutX="123.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarForm" prefHeight="25.0" prefWidth="95.0" text="limpiar formulario" />
+            <Button fx:id="btnLimpiarYCerrar" layoutX="9.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarYCerrar" prefHeight="25.0" prefWidth="102.0" text="limpiar y cerrar" />
+            <TextField fx:id="txtArchivoSelect" layoutX="61.0" layoutY="155.0" prefHeight="25.0" prefWidth="142.0" />
+            <Label layoutX="9.0" layoutY="154.0" prefHeight="27.0" prefWidth="52.0" text="Archivo:" />
+            <Label alignment="CENTER" layoutX="40.0" layoutY="8.0" prefHeight="27.0" prefWidth="118.0" text="Subir inventario" />
+            <ChoiceBox fx:id="selectInventarioMes" accessibleRole="CHECK_MENU_ITEM" layoutX="109.0" layoutY="76.0" prefHeight="25.0" prefWidth="110.0" />
+            <Label layoutX="13.0" layoutY="80.0" prefHeight="17.0" prefWidth="95.0" text="Mes de emision:" />
+         </children>
+      </Pane>
+      <TableView fx:id="tblInvrntario" layoutX="246.0" layoutY="83.0" prefHeight="308.0" prefWidth="418.0">
+        <columns>
+          <TableColumn fx:id="clmnInventarioId" prefWidth="34.0" text="ID" />
+          <TableColumn fx:id="clmnInventarioNombre" prefWidth="189.0" text="NOMBRE" />
+            <TableColumn fx:id="clmnInventarioExt" prefWidth="42.0" text="EXT" />
+            <TableColumn fx:id="clmnInventarioMes" minWidth="0.0" prefWidth="90.0" text="MES" />
+            <TableColumn fx:id="clmnInventarioCantidadDeItem" prefWidth="62.0" text="N° ITEMS" />
+        </columns>
+      </TableView>
+      <Button fx:id="btnVerItems" layoutX="248.0" layoutY="52.0" mnemonicParsing="false" onAction="#eventBuscarXItem" prefHeight="25.0" prefWidth="86.0" text="Ver Items" />
+      <Label layoutX="347.0" layoutY="51.0" prefHeight="27.0" prefWidth="44.0" text="Buscar:" />
+      <TextField fx:id="txtInventarioBuscar" layoutX="391.0" layoutY="52.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="246.0" layoutY="7.0" prefHeight="34.0" prefWidth="202.0" text="CARGUE DE INVENTARIO" />
+   </children>
+</AnchorPane>
