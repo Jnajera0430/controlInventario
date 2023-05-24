@@ -23,6 +23,11 @@ public abstract class AbsControlInventario {
     
     abstract public void limpiarFormulario();
     
+    /**
+     *
+     */
+    public void obtenerItemsDelArchivo(){};
+    
     public ObservableList mesesList() {
         ObservableList mesesList = FXCollections.observableArrayList();
         mesesList.add("ENERO");

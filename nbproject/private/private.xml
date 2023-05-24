@@ -5,9 +5,11 @@
         <group>
             <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/Main.java</file>
             <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/ExcelParser.java</file>
-            <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/notasDeCredito/NotasDeCreditoController.java</file>
             <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/inventario/InventarioController.java</file>
+            <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/Interfaces/ArchivoModel.java</file>
             <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/facturacion/FacturacionController.java</file>
+            <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/ModifyExcel.java</file>
+            <file>file:/C:/Users/auxsistemas3/Documents/NetBeansProjects/ControlInventario/src/controlinventario/items/ItemsViewController.java</file>
         </group>
     </open-files>
 </project-private>

@@ -14,37 +14,45 @@ import javafx.beans.property.StringProperty;
  * @author auxsistemas3
  */
 public class ExcelModel {
-    private StringProperty item;
-    private StringProperty cantidad;
-    private StringProperty lote;
-    private StringProperty  fechaDeVencimiento;
 
-    public ExcelModel(String item, String cantidad, String lote, String fechaDeVencimiento) {
-        this.item = new SimpleStringProperty(item);
-        this.cantidad = new SimpleStringProperty(cantidad);
+    private final IntegerProperty item;
+    private final StringProperty nombre;
+    private final StringProperty descripcion;
+    private final IntegerProperty cantidad;
+    private final StringProperty lote;
+    private final StringProperty fechaDeVencimiento;
+
+    public ExcelModel(int item, String nombre, String descripcion, int cantidad, String lote, String fechaDeVencimiento) {
+        this.item = new SimpleIntegerProperty(item);
+        this.nombre = new SimpleStringProperty(nombre);
+        this.descripcion = new SimpleStringProperty(descripcion);
+        this.cantidad = new SimpleIntegerProperty(cantidad);
         this.lote = new SimpleStringProperty(lote);
         this.fechaDeVencimiento = new SimpleStringProperty(fechaDeVencimiento);
     }
+
     public ExcelModel() {
         this.item = null;
         this.cantidad = null;
         this.lote = null;
         this.fechaDeVencimiento = null;
+        this.nombre = null;
+        this.descripcion = null;
     }
 
-    public String getItem() {
+    public int getItem() {
         return item.get();
     }
 
-    public void setItem(String item) {
+    public void setItem(int item) {
         this.item.set(item);
     }
 
-    public String getCantidad() {
+    public int getCantidad() {
         return cantidad.get();
     }
 
-    public void setCantidad(String cantidad) {
+    public void setCantidad(int cantidad) {
         this.cantidad.set(cantidad);
     }
 
@@ -63,6 +71,21 @@ public class ExcelModel {
     public void setFechaDeVencimiento(String fechaDeVencimiento) {
         this.fechaDeVencimiento.set(fechaDeVencimiento);
     }
-    
-    
+
+    public String getNombre() {
+        return nombre.get();
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre.set(nombre);
+    }
+
+    public String getDescripcion() {
+        return descripcion.get();
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion.set(descripcion);
+    }
+
 }

@@ -8,7 +8,9 @@ import controlinventario.ConexionMysql;
 import controlinventario.ExcelParser;
 import controlinventario.Interfaces.ArchivoModel;
 import controlinventario.Interfaces.ExcelModel;
+import controlinventario.ModifyExcel;
 import controlinventario.absControlInventario.AbsControlInventario;
+import controlinventario.absControlInventario.TypeProcessEnum;
 import controlinventario.inventario.InventarioController;
 import controlinventario.validaciones.Validaciones;
 import java.io.File;
@@ -48,7 +50,9 @@ import javafx.stage.Stage;
 public class NotasDeCreditoController extends AbsControlInventario implements Initializable {
 
     ExcelParser excelParser = new ExcelParser();
+    ModifyExcel modificarExcel = new ModifyExcel();
     private final ObservableList<ArchivoModel> listArch = FXCollections.observableArrayList();
+    ObservableList<ExcelModel> dataExcelNotasDeCredito = FXCollections.observableArrayList();
     Validaciones validate = new Validaciones();
     private File archivoSeleccionado;
     private String nomArchSeleccionado = null, rutaArchSelecccionado;
@@ -136,7 +140,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
                 Files.copy(archivoOriginal.toPath(), archivoCopia.toPath(),
                         StandardCopyOption.REPLACE_EXISTING);
                 ArchivoModel modelArch = new ArchivoModel(nombre, ext, archivoCopia.getPath(), mes);
-                String sql = "INSERT INTO facturacion(nombre,extension,rutas,mes) VALUES(?,?,?,?)";
+                String sql = "INSERT INTO notasdecredito(nombre,extension,rutas,mes) VALUES(?,?,?,?)";
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setString(1, modelArch.getNombre());
                 statement.setString(2, modelArch.getExt());
@@ -145,8 +149,19 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
                 statement.executeUpdate();
                 System.out.println("Se subió");
                 validate.archGuardado();
+                String sql2 = "SELECT * FROM inventarioinicial WHERE estado = true";
+                Statement statement2 = conn.createStatement();
+                ResultSet result = statement2.executeQuery(sql2);
+                while (result.next()) {
+                    ArchivoModel dataArch = new ArchivoModel(result.getString("nombre"),
+                            result.getInt("id"), result.getString("extension"),
+                            result.getString("rutas"), result.getString("fechaEmision"),
+                            result.getBoolean("estado"), result.getString("mes"));
+                    dataExcelNotasDeCredito = excelParser.parseExcel(archivoCopia.getPath());
+                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelNotasDeCredito,TypeProcessEnum.INGRESO);
+                }
             } catch (IOException | SQLException ex) {
-                Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE,
+                Logger.getLogger(NotasDeCreditoController.class.getName()).log(Level.SEVERE,
                         null, ex);
                 System.out.println("no se subió");
             }
@@ -199,7 +214,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
                 while (resultXarch.next()) {
                     String ruta = resultXarch.getString("rutas");
                     ObservableList<ExcelModel> datos = excelParser.parseExcel(ruta);
-                    dataArch.AsignarCantidad(datos.size() - 1);
+                    dataArch.AsignarCantidad(datos.size());
                 }
                 listArch.add(dataArch);
             }
@@ -213,7 +228,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(NotasDeCreditoController.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
     }

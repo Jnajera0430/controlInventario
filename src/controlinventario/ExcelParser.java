@@ -29,26 +29,32 @@ public class ExcelParser {
         File archivoSeleccionado = new File(ruta);
         ObservableList<ExcelModel> data = FXCollections.observableArrayList();
 
-        try ( FileInputStream fis = new FileInputStream(archivoSeleccionado);
-                Workbook workbook = WorkbookFactory.create(fis)) {
+        try ( FileInputStream fis = new FileInputStream(archivoSeleccionado);  Workbook workbook = WorkbookFactory.create(fis)) {
             Sheet sheet = workbook.getSheetAt(0);
-
+            boolean primeraFila = true;
             for (Row row : sheet) {
+                if (primeraFila) {
+                    primeraFila = false;
+                    continue; 
+                }
                 List<String> rowData = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
+
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     String cellValue = getCellValueAsString(cell);
-                    rowData.add(cellValue);                   
+                    rowData.add(cellValue);
                 }
-                if (rowData.size() == 4) {
-                    ExcelModel excelModel = new ExcelModel(rowData.get(0),
-                            rowData.get(1), rowData.get(2), rowData.get(3));
+                if (rowData.size() == 6) {
+                    ExcelModel excelModel = new ExcelModel(Integer.parseInt(rowData.get(0).split("\\.")[0]),
+                            rowData.get(1), rowData.get(2),
+                            Integer.parseInt(rowData.get(3).split("\\.")[0]),
+                            rowData.get(4),rowData.get(5));
                     data.add(excelModel);
                 }
             }
         } catch (IOException | EncryptedDocumentException ex) {
-            Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(ExcelParser.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
         return data;

@@ -6,9 +6,12 @@ package controlinventario.inventario;
 
 import controlinventario.ConexionMysql;
 import controlinventario.ExcelParser;
+import controlinventario.InicioController;
 import controlinventario.Interfaces.ArchivoModel;
 import controlinventario.Interfaces.ExcelModel;
 import controlinventario.absControlInventario.AbsControlInventario;
+import controlinventario.facturacion.FacturacionController;
+import controlinventario.items.ItemsViewController;
 import controlinventario.validaciones.Validaciones;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +35,9 @@ import javafx.stage.Stage;
 import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -105,9 +111,11 @@ public class InventarioController extends AbsControlInventario implements Initia
         // Mostrar el diálogo de selección de archivo
         Stage stage = null;
         archivoSeleccionado = fileChooser.showOpenDialog(stage);
-        nomArchSeleccionado = archivoSeleccionado.getName();
-        rutaArchSelecccionado = archivoSeleccionado.getPath();
-        txtArchivoSelect.setText(archivoSeleccionado.getName());
+        if (archivoSeleccionado != null) {
+            nomArchSeleccionado = archivoSeleccionado.getName();
+            rutaArchSelecccionado = archivoSeleccionado.getPath();
+            txtArchivoSelect.setText(archivoSeleccionado.getName());
+        }
     }
 
     @FXML
@@ -166,6 +174,19 @@ public class InventarioController extends AbsControlInventario implements Initia
 
     @FXML
     private void eventBuscarXItem(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/items/ItemsView.fxml"));
+            Parent root = loader.load();
+            ItemsViewController  controller = loader.getController();    
+            controller.listar(dataExcel);
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     @Override
@@ -213,7 +234,7 @@ public class InventarioController extends AbsControlInventario implements Initia
                 while (resultXarch.next()) {
                     String ruta = resultXarch.getString("rutas");
                     dataExcel = excelParser.parseExcel(ruta);
-                    dataArch.AsignarCantidad(dataExcel.size() - 1);
+                    dataArch.AsignarCantidad(dataExcel.size());
                 }
 
                 listArch.add(dataArch);

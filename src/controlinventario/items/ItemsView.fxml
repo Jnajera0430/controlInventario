@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="controlinventario.items.ItemsViewController">
+    <stylesheets>
+        <URL value="@itemsview.css" />
+    </stylesheets>
+   <children>
+      <TableView fx:id="tblItems" layoutY="86.0" prefHeight="308.0" prefWidth="620.0" tableMenuButtonVisible="true">
+         <columns>
+            <TableColumn fx:id="clmnItem" minWidth="-Infinity" prefWidth="75.0" text="ITEM" />
+            <TableColumn fx:id="clmnNombre" prefWidth="64.0" text="NOMBRE" />
+            <TableColumn fx:id="clmnDescripcion" prefWidth="157.0" text="DESCRIPION" />
+            <TableColumn fx:id="clmnLote" prefWidth="84.0" text="LOTE" />
+            <TableColumn fx:id="clmnFechaDeVencimiento" prefWidth="155.0" text="FECHA DE VENCIMIENTO" />
+            <TableColumn fx:id="clmnCantidadPorItem" minWidth="0.0" prefWidth="81.0" text="CANTIDAD" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

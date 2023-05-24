@@ -14,33 +14,33 @@
     <stylesheets>
         <URL value="@facturacion.css" />
     </stylesheets>
-   <children>
-      <TableView fx:id="tblFacturacion" layoutX="248.0" layoutY="85.0" prefHeight="308.0" prefWidth="418.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="248.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
-         <columns>
-            <TableColumn fx:id="clmnId" minWidth="-Infinity" prefWidth="34.0" text="ID" />
-            <TableColumn fx:id="clmnNombre" prefWidth="189.0" text="NOMBRE" />
-            <TableColumn fx:id="clmnExt" prefWidth="42.0" text="EXT" />
-            <TableColumn fx:id="clmnMes" minWidth="0.0" prefWidth="81.0" text="MES" />
-            <TableColumn fx:id="clmnCantidadDeItem" prefWidth="71.0" text="N° ITEMS" />
-         </columns>
-      </TableView>
-      <Pane layoutX="14.0" layoutY="85.0" prefHeight="308.0" prefWidth="232.0">
-         <children>
-            <Label layoutX="13.0" layoutY="130.0" prefHeight="17.0" prefWidth="95.0" text="Cargar archivo:" />
-            <Button fx:id="btnCargaArch" layoutX="107.0" layoutY="118.0" mnemonicParsing="false" onAction="#eventCargaDeArch" prefHeight="34.0" prefWidth="110.0" text="cargar archivo..." />
-            <Button fx:id="btnSubirArch" layoutX="9.0" layoutY="194.0" mnemonicParsing="false" onAction="#eventSubirArch" prefHeight="27.0" prefWidth="86.0" text="subir..." />
-            <Button fx:id="btnLimpiarForm" layoutX="123.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarForm" prefHeight="34.0" prefWidth="95.0" text="limpiar formulario" />
-            <Button fx:id="btnLimpiarYCerrar" layoutX="9.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarYCerrar" prefHeight="34.0" prefWidth="102.0" text="limpiar y cerrar" />
-            <TextField fx:id="txtArchivoSelect" layoutX="61.0" layoutY="155.0" prefHeight="25.0" prefWidth="142.0" />
-            <Label layoutX="9.0" layoutY="154.0" prefHeight="27.0" prefWidth="52.0" text="Archivo:" />
-            <Label alignment="CENTER" layoutX="40.0" layoutY="8.0" prefHeight="27.0" prefWidth="118.0" text="Subir factura" />
-            <ChoiceBox fx:id="selectMes" accessibleRole="CHECK_MENU_ITEM" layoutX="117.0" layoutY="76.0" prefHeight="26.0" prefWidth="102.0" />
-            <Label layoutX="13.0" layoutY="80.0" prefHeight="18.0" prefWidth="102.0" text="Mes de emision:" />
-         </children>
-      </Pane>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="239.0" layoutY="14.0" prefHeight="34.0" prefWidth="202.0" text="CARGUE DE FACTURAS" />
-      <Button layoutX="248.0" layoutY="54.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Ver Items" />
-      <Label layoutX="345.0" layoutY="53.0" prefHeight="27.0" prefWidth="52.0" text="Buscar:" />
-      <TextField layoutX="389.0" layoutY="54.0" />
-   </children>
+    <children>
+        <TableView fx:id="tblFacturacion" layoutX="248.0" layoutY="85.0" onMouseClicked="#obtenerItemsDelArchivo" prefHeight="308.0" prefWidth="418.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="248.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="85.0">
+            <columns>
+                <TableColumn fx:id="clmnId" minWidth="-Infinity" prefWidth="34.0" text="ID" />
+                <TableColumn fx:id="clmnNombre" prefWidth="189.0" text="NOMBRE" />
+                <TableColumn fx:id="clmnExt" prefWidth="42.0" text="EXT" />
+                <TableColumn fx:id="clmnMes" minWidth="0.0" prefWidth="81.0" text="MES" />
+                <TableColumn fx:id="clmnCantidadDeItem" prefWidth="71.0" text="N° ITEMS" />
+            </columns>
+        </TableView>
+        <Pane layoutX="14.0" layoutY="85.0" prefHeight="308.0" prefWidth="232.0">
+            <children>
+                <Label layoutX="13.0" layoutY="130.0" prefHeight="17.0" prefWidth="95.0" text="Cargar archivo:" />
+                <Button fx:id="btnCargaArch" layoutX="107.0" layoutY="118.0" mnemonicParsing="false" onAction="#eventCargaDeArch" prefHeight="34.0" prefWidth="110.0" text="cargar archivo..." />
+                <Button fx:id="btnSubirArch" layoutX="9.0" layoutY="194.0" mnemonicParsing="false" onAction="#eventSubirArch" prefHeight="27.0" prefWidth="86.0" text="subir..." />
+                <Button fx:id="btnLimpiarForm" layoutX="123.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarForm" prefHeight="34.0" prefWidth="95.0" text="limpiar formulario" />
+                <Button fx:id="btnLimpiarYCerrar" layoutX="9.0" layoutY="230.0" mnemonicParsing="false" onAction="#eventLimpiarYCerrar" prefHeight="34.0" prefWidth="102.0" text="limpiar y cerrar" />
+                <TextField fx:id="txtArchivoSelect" layoutX="61.0" layoutY="155.0" prefHeight="25.0" prefWidth="142.0" />
+                <Label layoutX="9.0" layoutY="154.0" prefHeight="27.0" prefWidth="52.0" text="Archivo:" />
+                <Label alignment="CENTER" layoutX="40.0" layoutY="8.0" prefHeight="27.0" prefWidth="118.0" text="Subir factura" />
+                <ChoiceBox fx:id="selectMes" accessibleRole="CHECK_MENU_ITEM" layoutX="117.0" layoutY="76.0" prefHeight="26.0" prefWidth="102.0" />
+                <Label layoutX="13.0" layoutY="80.0" prefHeight="18.0" prefWidth="102.0" text="Mes de emision:" />
+            </children>
+        </Pane>
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="239.0" layoutY="14.0" prefHeight="34.0" prefWidth="202.0" text="CARGUE DE FACTURAS" />
+        <Button fx:id="btnVerPorItem" layoutX="248.0" layoutY="54.0" mnemonicParsing="false" onAction="#eventVerPorItem" prefHeight="27.0" prefWidth="86.0" text="Ver Items" />
+        <Label layoutX="345.0" layoutY="53.0" prefHeight="27.0" prefWidth="52.0" text="Buscar:" />
+        <TextField layoutX="389.0" layoutY="54.0" />
+    </children>
 </AnchorPane>

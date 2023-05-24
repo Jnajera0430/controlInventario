@@ -8,9 +8,13 @@ import controlinventario.ConexionMysql;
 import controlinventario.ExcelParser;
 import controlinventario.Interfaces.ArchivoModel;
 import controlinventario.Interfaces.ExcelModel;
+import controlinventario.ModifyExcel;
 import controlinventario.absControlInventario.AbsControlInventario;
+import controlinventario.absControlInventario.TypeProcessEnum;
 import controlinventario.inventario.InventarioController;
+import controlinventario.items.ItemsViewController;
 import controlinventario.validaciones.Validaciones;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +34,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -47,7 +54,10 @@ import javafx.stage.Stage;
  */
 public class FacturacionController extends AbsControlInventario implements Initializable {
 
+    ObservableList<ExcelModel> dataExcel = FXCollections.observableArrayList();
+    ObservableList<ExcelModel> dataExcelFactura = FXCollections.observableArrayList();
     ExcelParser excelParser = new ExcelParser();
+    ModifyExcel modificarExcel = new ModifyExcel();
     private final ObservableList<ArchivoModel> listArch = FXCollections.observableArrayList();
     Validaciones validate = new Validaciones();
     private File archivoSeleccionado;
@@ -76,9 +86,9 @@ public class FacturacionController extends AbsControlInventario implements Initi
     @FXML
     private TextField txtArchivoSelect;
     @FXML
-    private TableView<?> tblNotasDecredito;
-    @FXML
     private ChoiceBox<?> selectMes;
+    @FXML
+    private Button btnVerPorItem;
 
     /**
      * Initializes the controller class.
@@ -91,9 +101,10 @@ public class FacturacionController extends AbsControlInventario implements Initi
         // TODO      
         protegerArchivo();
         listarMeses();
-        
-        
+
         listar();
+
+        obtenerItemsDelArchivo();
     }
 
     @FXML
@@ -108,9 +119,11 @@ public class FacturacionController extends AbsControlInventario implements Initi
         // Mostrar el diálogo de selección de archivo
         Stage stage = null;
         archivoSeleccionado = fileChooser.showOpenDialog(stage);
-        nomArchSeleccionado = archivoSeleccionado.getName();
-        rutaArchSelecccionado = archivoSeleccionado.getPath();
-        txtArchivoSelect.setText(archivoSeleccionado.getName());
+        if (archivoSeleccionado != null) {
+            nomArchSeleccionado = archivoSeleccionado.getName();
+            rutaArchSelecccionado = archivoSeleccionado.getPath();
+            txtArchivoSelect.setText(archivoSeleccionado.getName());
+        }
     }
 
     @FXML
@@ -144,8 +157,20 @@ public class FacturacionController extends AbsControlInventario implements Initi
                 statement.executeUpdate();
                 System.out.println("Se subió");
                 validate.archGuardado();
+                String sql2 = "SELECT * FROM inventarioinicial WHERE estado = true";
+                Statement statement2 = conn.createStatement();
+                ResultSet result = statement2.executeQuery(sql2);
+                while (result.next()) {
+                    ArchivoModel dataArch = new ArchivoModel(result.getString("nombre"),
+                            result.getInt("id"), result.getString("extension"),
+                            result.getString("rutas"), result.getString("fechaEmision"),
+                            result.getBoolean("estado"), result.getString("mes"));
+                    dataExcelFactura = excelParser.parseExcel(archivoCopia.getPath());
+                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelFactura,TypeProcessEnum.SALIDA);
+                }
+
             } catch (IOException | SQLException ex) {
-                Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE,
+                Logger.getLogger(FacturacionController.class.getName()).log(Level.SEVERE,
                         null, ex);
                 System.out.println("no se subió");
             }
@@ -198,7 +223,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
                 while (resultXarch.next()) {
                     String ruta = resultXarch.getString("rutas");
                     ObservableList<ExcelModel> datos = excelParser.parseExcel(ruta);
-                    dataArch.AsignarCantidad(datos.size() - 1);
+                    dataArch.AsignarCantidad(datos.size());
                 }
                 listArch.add(dataArch);
             }
@@ -212,7 +237,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(InventarioController.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(FacturacionController.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
     }
@@ -240,5 +265,35 @@ public class FacturacionController extends AbsControlInventario implements Initi
     public void limpiarFormulario() {
         txtArchivoSelect.setText("");
         ArchivoModel archivoModel = new ArchivoModel();
+    }
+
+    @FXML
+    private void eventVerPorItem(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/items/ItemsView.fxml"));
+            Parent root = loader.load();
+            ItemsViewController controller = loader.getController();
+            controller.listar(dataExcel);
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+            tblFacturacion.getSelectionModel().clearSelection();
+        } catch (IOException ex) {
+            Logger.getLogger(FacturacionController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void obtenerItemsDelArchivo() {
+        tblFacturacion.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection,
+                newSelection) -> {
+            if (newSelection != null) {
+                ArchivoModel data = newSelection;
+                dataExcel = excelParser.parseExcel(data.getRuta());
+            }
+        }
+        );
     }
 }
