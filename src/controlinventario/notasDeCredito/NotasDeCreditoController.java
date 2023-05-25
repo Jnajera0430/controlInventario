@@ -11,7 +11,9 @@ import controlinventario.Interfaces.ExcelModel;
 import controlinventario.ModifyExcel;
 import controlinventario.absControlInventario.AbsControlInventario;
 import controlinventario.absControlInventario.TypeProcessEnum;
+import controlinventario.facturacion.FacturacionController;
 import controlinventario.inventario.InventarioController;
+import controlinventario.items.ItemsViewController;
 import controlinventario.validaciones.Validaciones;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -51,6 +56,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
 
     ExcelParser excelParser = new ExcelParser();
     ModifyExcel modificarExcel = new ModifyExcel();
+    ObservableList<ExcelModel> dataExcel = FXCollections.observableArrayList();
     private final ObservableList<ArchivoModel> listArch = FXCollections.observableArrayList();
     ObservableList<ExcelModel> dataExcelNotasDeCredito = FXCollections.observableArrayList();
     Validaciones validate = new Validaciones();
@@ -82,6 +88,8 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
     private TableView<ArchivoModel> tblNotasDecredito;
     @FXML
     private ChoiceBox<?> selectMes;
+    @FXML
+    private Button btnVerPorItem;
 
     /**
      * Initializes the controller class.
@@ -96,6 +104,8 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
         listarMeses();
 
         listar();
+        
+        obtenerItemsDelArchivo();
     }
 
     @FXML
@@ -126,7 +136,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
                 String[] separarNombre = nomArchSeleccionado.split("\\.");
                 String nombre = separarNombre[0], ext = separarNombre[1],
                         mes = (String) selectMes.getValue();
-                File copiaDestino = new File(rutaArchSelecccionado);
+                //File copiaDestino = new File(rutaArchSelecccionado);
 
                 String rutaCarpeta = "C:/Users/auxsistemas3/Desktop/controlDeinventarios/";
                 Date fecha = new Date(System.currentTimeMillis());
@@ -158,7 +168,7 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
                             result.getString("rutas"), result.getString("fechaEmision"),
                             result.getBoolean("estado"), result.getString("mes"));
                     dataExcelNotasDeCredito = excelParser.parseExcel(archivoCopia.getPath());
-                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelNotasDeCredito,TypeProcessEnum.INGRESO);
+                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelNotasDeCredito, TypeProcessEnum.INGRESO);
                 }
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(NotasDeCreditoController.class.getName()).log(Level.SEVERE,
@@ -256,6 +266,36 @@ public class NotasDeCreditoController extends AbsControlInventario implements In
     public void limpiarFormulario() {
         txtArchivoSelect.setText("");
         ArchivoModel archivoModel = new ArchivoModel();
+    }
+
+    @Override
+    public void obtenerItemsDelArchivo() {
+        tblNotasDecredito.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection,
+                newSelection) -> {
+            if (newSelection != null) {
+                ArchivoModel data = newSelection;
+                dataExcel = excelParser.parseExcel(data.getRuta());
+            }
+        }
+        );
+    }
+
+    @FXML
+    private void eventVerPorItem(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/items/ItemsView.fxml"));
+            Parent root = loader.load();
+            ItemsViewController controller = loader.getController();
+            controller.listar(dataExcel);
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+            tblNotasDecredito.getSelectionModel().clearSelection();
+        } catch (IOException ex) {
+            Logger.getLogger(FacturacionController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

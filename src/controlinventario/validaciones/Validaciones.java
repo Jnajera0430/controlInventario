@@ -19,8 +19,8 @@ public class Validaciones {
         if (nombreArch == null) {
             alertInf.setHeaderText("Empty fields");
             alertInf.setTitle("Warning: ");
-            alertInf.setContentText("The field name is empty..");
-            alertInf.showAndWait();
+            alertInf.setContentText("Empty fields exist..");
+            alertInf.show();
             return;
         }
     }
@@ -29,6 +29,6 @@ public class Validaciones {
         alertInf.setHeaderText("Save File");
         alertInf.setTitle("Success: ");
         alertInf.setContentText("The file has been saved successfully");
-        alertInf.showAndWait();
+        alertInf.show();
     }
 }

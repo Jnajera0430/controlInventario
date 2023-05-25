@@ -35,7 +35,7 @@ public class ExcelParser {
             for (Row row : sheet) {
                 if (primeraFila) {
                     primeraFila = false;
-                    continue; 
+                    continue;
                 }
                 List<String> rowData = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
@@ -45,11 +45,21 @@ public class ExcelParser {
                     String cellValue = getCellValueAsString(cell);
                     rowData.add(cellValue);
                 }
-                if (rowData.size() == 6) {
-                    ExcelModel excelModel = new ExcelModel(Integer.parseInt(rowData.get(0).split("\\.")[0]),
-                            rowData.get(1), rowData.get(2),
-                            Integer.parseInt(rowData.get(3).split("\\.")[0]),
-                            rowData.get(4),rowData.get(5));
+                if (rowData.size() == 10) {
+
+                    String itemValueInicial = rowData.get(0), cantidadValueInicial = rowData.get(5),
+                            centroDeCostoValueInicial = rowData.get(7);
+                    if (itemValueInicial.isEmpty() || cantidadValueInicial.isEmpty() || centroDeCostoValueInicial.isEmpty()) {
+                        System.err.println("Error: Existen datos en el archivo que estan vacios");
+                        break;
+                    }
+                    int itemValue = Integer.parseInt(itemValueInicial.trim().split("\\.")[0]),
+                            cantidadValue = Integer.parseInt(cantidadValueInicial.trim().split("\\.")[0]),
+                            centroDeCostoValue = Integer.parseInt(centroDeCostoValueInicial.trim().split("\\.")[0]);
+                    ExcelModel excelModel = new ExcelModel(itemValue, rowData.get(1), rowData.get(2),
+                            rowData.get(3), rowData.get(4), cantidadValue, rowData.get(6),
+                            centroDeCostoValue, rowData.get(8), rowData.get(9));
+
                     data.add(excelModel);
                 }
             }

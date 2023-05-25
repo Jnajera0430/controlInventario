@@ -157,6 +157,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
                 statement.executeUpdate();
                 System.out.println("Se subió");
                 validate.archGuardado();
+                listar();
                 String sql2 = "SELECT * FROM inventarioinicial WHERE estado = true";
                 Statement statement2 = conn.createStatement();
                 ResultSet result = statement2.executeQuery(sql2);
@@ -166,7 +167,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
                             result.getString("rutas"), result.getString("fechaEmision"),
                             result.getBoolean("estado"), result.getString("mes"));
                     dataExcelFactura = excelParser.parseExcel(archivoCopia.getPath());
-                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelFactura,TypeProcessEnum.SALIDA);
+                    modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelFactura, TypeProcessEnum.SALIDA);
                 }
 
             } catch (IOException | SQLException ex) {
@@ -176,7 +177,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
             }
 
         }
-        listar();
+
         limpiarFormulario();
     }
 
@@ -223,6 +224,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
                 while (resultXarch.next()) {
                     String ruta = resultXarch.getString("rutas");
                     ObservableList<ExcelModel> datos = excelParser.parseExcel(ruta);
+
                     dataArch.AsignarCantidad(datos.size());
                 }
                 listArch.add(dataArch);

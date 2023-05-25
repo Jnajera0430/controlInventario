@@ -5,19 +5,23 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="controlinventario.items.ItemsViewController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="905.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlinventario.items.ItemsViewController">
     <stylesheets>
         <URL value="@itemsview.css" />
     </stylesheets>
    <children>
-      <TableView fx:id="tblItems" layoutY="86.0" prefHeight="308.0" prefWidth="620.0" tableMenuButtonVisible="true">
+      <TableView fx:id="tblItems" layoutX="1.0" layoutY="86.0" prefHeight="315.0" prefWidth="905.0" tableMenuButtonVisible="true">
          <columns>
-            <TableColumn fx:id="clmnItem" minWidth="-Infinity" prefWidth="75.0" text="ITEM" />
-            <TableColumn fx:id="clmnNombre" prefWidth="64.0" text="NOMBRE" />
-            <TableColumn fx:id="clmnDescripcion" prefWidth="157.0" text="DESCRIPION" />
-            <TableColumn fx:id="clmnLote" prefWidth="84.0" text="LOTE" />
-            <TableColumn fx:id="clmnFechaDeVencimiento" prefWidth="155.0" text="FECHA DE VENCIMIENTO" />
-            <TableColumn fx:id="clmnCantidadPorItem" minWidth="0.0" prefWidth="81.0" text="CANTIDAD" />
+            <TableColumn fx:id="clmnItem" minWidth="-Infinity" prefWidth="39.0" text="ITEM" />
+            <TableColumn fx:id="clmnDescripcion" prefWidth="178.0" text="DESCRIPION" />
+            <TableColumn fx:id="clmnLaboratorio" prefWidth="91.0" text="LABORATORIO" />
+            <TableColumn fx:id="clmnLote" prefWidth="51.0" text="LOTE" />
+            <TableColumn fx:id="clmnFechaDeVencimiento" prefWidth="148.0" text="FECHA DE VENCIMIENTO" />
+            <TableColumn fx:id="clmnCantidad" prefWidth="76.0" text="CANTIDAD" />
+            <TableColumn fx:id="clmnLinea" minWidth="0.0" prefWidth="75.0" text="LINEA" />
+            <TableColumn fx:id="clmnCentroDeCosto" minWidth="0.0" prefWidth="125.0" text="CENTRO DE COSTO" />
+            <TableColumn fx:id="clmnSede" minWidth="0.0" prefWidth="58.0" text="SEDE" />
+            <TableColumn fx:id="clmnTipo" prefWidth="50.0" text="TIPO" />
          </columns>
       </TableView>
    </children>
