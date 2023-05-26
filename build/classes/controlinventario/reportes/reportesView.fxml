@@ -28,7 +28,7 @@
                   <Button fx:id="btnGenerarReporte" layoutX="1014.0" layoutY="59.0" mnemonicParsing="false" onAction="#eventGenerarReporte" prefHeight="25.0" prefWidth="158.0" text="GENERAR REPORTE" />
                   <CheckBox fx:id="checkAllYear" layoutX="15.0" layoutY="17.0" mnemonicParsing="false" text="TODO LOS MESES" />
                   <Button fx:id="btnLimpiarFormulario" layoutX="1014.0" layoutY="22.0" mnemonicParsing="false" onAction="#eventLimpiarFormulario" prefHeight="25.0" prefWidth="158.0" text="LIMPIAR FORMULARIO" />
-                  <RadioButton fx:id="btnBoxAllTypeDatos" layoutX="839.0" layoutY="17.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="TODOS LO DATOS " />
+                  <RadioButton fx:id="btnBoxAllTypeDatos" layoutX="839.0" layoutY="17.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="TODOS LOS DATOS " />
                   <RadioButton fx:id="btnBoxFacturas" layoutX="839.0" layoutY="39.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="POR FACTURACION" />
                   <RadioButton fx:id="btnBoxNotasDeCredito" layoutX="839.0" layoutY="63.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="POR NOTAS DE CREDITO" />
                   <Label layoutX="150.0" layoutY="14.0" prefHeight="25.0" prefWidth="54.0" text="BUSCAR:" />

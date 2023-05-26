@@ -15,16 +15,18 @@ import javafx.beans.property.StringProperty;
  */
 public class ReporteModel {
 
-    private  IntegerProperty item, centroDeCosto, cantidadEnElInventario, cantidadEnLaFatura,
-            cantidadEnLaNotaCredito, consumo;
+    private final IntegerProperty item, centroDeCosto, cantidadEnElInventario;
+    private final IntegerProperty cantidadEnLaFatura = new SimpleIntegerProperty();
+    private final IntegerProperty cantidadEnLaNotaCredito = new SimpleIntegerProperty();
+    private final IntegerProperty consumo = new SimpleIntegerProperty();
     private final StringProperty descripcion, laboratorio, lote, fechaDeVencimiento,
-            linea, sede, tipo;
+            linea, sede, tipo,mes;
 
     public ReporteModel(int item, int centroDeCosto,
             int cantidadEnElInventario, int cantidadEnLaFatura,
             int cantidadEnLaNotaCredito, int consumo, String descripcion,
             String laboratorio, String lote, String fechaDeVencimiento,
-            String linea, String sede, String tipo) {
+            String linea, String sede, String tipo,String mes) {
         this.item = new SimpleIntegerProperty(item);
         this.centroDeCosto = new SimpleIntegerProperty(centroDeCosto);
         this.cantidadEnElInventario = new SimpleIntegerProperty(cantidadEnElInventario);
@@ -35,9 +37,7 @@ public class ReporteModel {
         this.linea = new SimpleStringProperty(linea);
         this.sede = new SimpleStringProperty(sede);
         this.tipo = new SimpleStringProperty(tipo);
-        this.cantidadEnLaFatura = new SimpleIntegerProperty(cantidadEnLaFatura);
-        this.cantidadEnLaNotaCredito = new SimpleIntegerProperty(cantidadEnLaNotaCredito);
-        this.consumo = new SimpleIntegerProperty(consumo);
+        this.mes = new SimpleStringProperty(mes);
     }
 
     public ReporteModel(int item, int centroDeCosto,
@@ -54,6 +54,7 @@ public class ReporteModel {
         this.linea = new SimpleStringProperty(linea);
         this.sede = new SimpleStringProperty(sede);
         this.tipo = new SimpleStringProperty(tipo);
+        this.mes = new SimpleStringProperty(null);
     }
 
     public void asignarCantidadFactura(int cantidadEnLaFatura) {
@@ -71,10 +72,10 @@ public class ReporteModel {
     public ReporteModel() {
         this.item = null;
         this.centroDeCosto = null;
-        this.cantidadEnElInventario = null;
-        this.cantidadEnLaFatura = null;
-        this.cantidadEnLaNotaCredito = null;
-        this.consumo = null;
+        this.cantidadEnElInventario = new SimpleIntegerProperty(0);
+        this.cantidadEnLaFatura.set(0);
+        this.cantidadEnLaNotaCredito.set(0);
+        this.consumo.set(0);
         this.descripcion = null;
         this.laboratorio = null;
         this.lote = null;
@@ -82,6 +83,7 @@ public class ReporteModel {
         this.linea = null;
         this.sede = null;
         this.tipo = null;
+        this.mes = null;
     }
 
     public int getItem() {
@@ -186,6 +188,14 @@ public class ReporteModel {
 
     public void setTipo(String tipo) {
         this.tipo.set(tipo);
+    }
+    
+    public String getMes() {
+        return mes.get();
+    }
+
+    public void setTMes(String mes) {
+        this.mes.set(mes);
     }
 
 }

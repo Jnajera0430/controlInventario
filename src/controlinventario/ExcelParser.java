@@ -5,6 +5,7 @@
 package controlinventario;
 
 import controlinventario.Interfaces.ExcelModel;
+import controlinventario.Interfaces.ReporteModel;
 import controlinventario.inventario.InventarioController;
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,6 +60,53 @@ public class ExcelParser {
                     ExcelModel excelModel = new ExcelModel(itemValue, rowData.get(1), rowData.get(2),
                             rowData.get(3), rowData.get(4), cantidadValue, rowData.get(6),
                             centroDeCostoValue, rowData.get(8), rowData.get(9));
+
+                    data.add(excelModel);
+                }
+            }
+        } catch (IOException | EncryptedDocumentException ex) {
+            Logger.getLogger(ExcelParser.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        }
+        return data;
+
+    }
+
+    public ObservableList<ReporteModel> parseExcelToReport(String ruta) {
+        File archivoSeleccionado = new File(ruta);
+        ObservableList<ReporteModel> data = FXCollections.observableArrayList();
+
+        try ( FileInputStream fis = new FileInputStream(archivoSeleccionado);  Workbook workbook = WorkbookFactory.create(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            boolean primeraFila = true;
+            for (Row row : sheet) {
+                if (primeraFila) {
+                    primeraFila = false;
+                    continue;
+                }
+                List<String> rowData = new ArrayList<>();
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    String cellValue = getCellValueAsString(cell);
+                    rowData.add(cellValue);
+                }
+                if (rowData.size() == 10) {
+
+                    String itemValueInicial = rowData.get(0), cantidadValueInicial = rowData.get(5),
+                            centroDeCostoValueInicial = rowData.get(7);
+                    if (itemValueInicial.isEmpty() || cantidadValueInicial.isEmpty() || centroDeCostoValueInicial.isEmpty()) {
+                        System.err.println("Error: Existen datos en el archivo que estan vacios");
+                        break;
+                    }
+                    int itemValue = Integer.parseInt(itemValueInicial.trim().split("\\.")[0]),
+                            cantidadValue = Integer.parseInt(cantidadValueInicial.trim().split("\\.")[0]),
+                            centroDeCostoValue = Integer.parseInt(centroDeCostoValueInicial.trim().split("\\.")[0]);
+
+                    ReporteModel excelModel = new ReporteModel(itemValue, centroDeCostoValue, cantidadValue,
+                            rowData.get(1), rowData.get(2), rowData.get(3), rowData.get(4),
+                            rowData.get(6), rowData.get(8), rowData.get(9));
 
                     data.add(excelModel);
                 }

@@ -6,10 +6,16 @@ package controlinventario.reportes;
 
 import controlinventario.Interfaces.ReporteModel;
 import controlinventario.absControlInventario.AbsControlInventario;
+import controlinventario.absControlInventario.AbsSentenciasSQL;
+import controlinventario.items.ItemsViewController;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -19,6 +25,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -26,7 +33,8 @@ import javafx.scene.control.TextField;
  * @author auxsistemas3
  */
 public class ReportesController extends AbsControlInventario implements Initializable {
-
+    ObservableList<ReporteModel> dataReport = FXCollections.observableArrayList();
+    AbsSentenciasSQL sentencias = new AbsSentenciasSQL();
     @FXML
     private ComboBox<?> selectMesInicial;
     @FXML
@@ -114,6 +122,17 @@ public class ReportesController extends AbsControlInventario implements Initiali
                 selectMesInicial.setDisable(true);
                 selectMesFinal.setDisable(true);
             }
+            eventOnChangedQueGeneraElReporte();
+        });
+
+        selectMesInicial.setOnAction(event -> {
+            var selectedValue = selectMesInicial.getSelectionModel().getSelectedItem();
+            eventOnChangedQueGeneraElReporte();
+        });
+
+        selectMesFinal.setOnAction(event -> {
+            var selectedValue = selectMesFinal.getSelectionModel().getSelectedItem();
+            eventOnChangedQueGeneraElReporte();
         });
 
         btnBoxAllTypeDatos.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -122,26 +141,38 @@ public class ReportesController extends AbsControlInventario implements Initiali
                 btnBoxNotasDeCredito.setSelected(false);
             }
         });
-        
+
         btnBoxFacturas.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnBoxAllTypeDatos.setSelected(false);
                 btnBoxNotasDeCredito.setSelected(false);
             }
         });
-        
+
         btnBoxNotasDeCredito.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnBoxFacturas.setSelected(false);
                 btnBoxAllTypeDatos.setSelected(false);
             }
         });
+        eventOnChangedQueGeneraElReporte();
     }
 
-    public void eventOnChangedQueGeneraElReporte(){
+    public void eventOnChangedQueGeneraElReporte() {        
+        System.err.println("select MES FINAL: "+selectMesFinal.getValue());
+        System.err.println("select MES INICIAL: "+selectMesInicial.getValue());
+        System.err.println("check TODO LOS MESES: "+checkAllYear.isSelected());
+        System.err.println("btn TIPO DE DATO: "+btnBoxAllTypeDatos.isSelected());
+        System.err.println("-------------------------------------------------");
         
+        if(checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()){
+            dataReport = sentencias.todosLosDatosConTodosLosMeses();
+        }
+        
+        
+        listar();
     }
-    
+
     @Override
     public void listarMeses() {
         ObservableList mesesList = mesesList();
@@ -151,7 +182,35 @@ public class ReportesController extends AbsControlInventario implements Initiali
 
     @Override
     public void listar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        for(ReporteModel dato : dataReport){
+            System.err.print("item: " + dato.getItem() + "cantidadEnElInventario: " + dato.getCantidadEnElInventario() );
+            System.err.print(" Facturada: " + dato.getCantidadEnLaFatura() + " Notas de credito: " + dato.getCantidadEnLaNotaCredito());
+            System.err.print(" Consumo: "+ dato.getConsumo());
+            System.err.println("");
+        }
+        
+        try {
+            tblReportes.getItems().clear();
+            if (!dataReport.isEmpty()) {               
+                tblReportes.setItems(dataReport);
+                clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));               
+                clmnDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+                clmnLaboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));
+                clmnLote.setCellValueFactory(new PropertyValueFactory<>("lote"));
+                clmnFechaDeVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechaDeVencimiento"));
+                clmnLinea.setCellValueFactory(new PropertyValueFactory<>("linea"));
+                clmnCentroDeCosto.setCellValueFactory(new PropertyValueFactory<>("centroDeCosto"));
+                clmnSede.setCellValueFactory(new PropertyValueFactory<>("sede"));
+                clmnTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+                clmnCantidadDeInventario.setCellValueFactory(new PropertyValueFactory<>("cantidadEnElInventario"));
+                clmnCantidadFactura.setCellValueFactory(new PropertyValueFactory<>("cantidadEnLaFatura"));
+                clmnCantidadNotasDeCredito.setCellValueFactory(new PropertyValueFactory<>("cantidadEnLaNotaCredito"));
+                clmnCantidadConsumo.setCellValueFactory(new PropertyValueFactory<>("consumo"));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ItemsViewController.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        }
     }
 
     @Override
