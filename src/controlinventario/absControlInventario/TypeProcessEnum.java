@@ -12,7 +12,7 @@ public enum TypeProcessEnum {
     INGRESO("INGRESO"),
     SALIDA("SALIDA");
     
-    private String process;
+    private final String process;
 
     private TypeProcessEnum(String process) {
         this.process = process;

@@ -6,17 +6,12 @@ package controlinventario;
 
 import controlinventario.Interfaces.ExcelModel;
 import controlinventario.absControlInventario.TypeProcessEnum;
-import controlinventario.inventario.InventarioController;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -44,8 +39,8 @@ public class ModifyExcel {
                         primeraFila = false;
                         continue;
                     }
-                    Cell itemCell = row.getCell(0), loteCell = row.getCell(4),
-                            fechaDeVencimientoCell = row.getCell(5);
+                    Cell itemCell = row.getCell(0), loteCell = row.getCell(3),
+                            fechaDeVencimientoCell = row.getCell(4);
                     String itemValue = getCellValueAsString(itemCell),
                             loteValue = getCellValueAsString(loteCell),
                             fechaDeVencimientoValue = getCellValueAsString(fechaDeVencimientoCell);
@@ -54,7 +49,7 @@ public class ModifyExcel {
                         if (registrosDelArchivo.getItem() == itemValueFinal
                                 && registrosDelArchivo.getLote().equals(loteValue)
                                 && registrosDelArchivo.getFechaDeVencimiento().equals(fechaDeVencimientoValue)) {
-                            Cell cantidadCell = row.getCell(3);
+                            Cell cantidadCell = row.getCell(5);
                             if (cantidadCell != null) {
                                 int cantidadValue = Integer.parseInt(getCellValueAsString(cantidadCell).split("\\.")[0]);
                                 int result = 0;

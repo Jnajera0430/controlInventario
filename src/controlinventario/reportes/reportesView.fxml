@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlinventario.reportes.ReportesController">
+<AnchorPane id="AnchorPane" prefHeight="614.0" prefWidth="1201.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlinventario.reportes.ReportesController">
     <stylesheets>
-        <URL value="@reportes.css"/>
+        <URL value="@reportes.css" />
     </stylesheets>
+   <children>
+      <SplitPane dividerPositions="0.27486910994764396" layoutX="7.0" layoutY="43.0" orientation="VERTICAL" prefHeight="614.0" prefWidth="1201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label layoutX="19.0" layoutY="59.0" prefHeight="25.0" prefWidth="78.0" text="MES INICIAL:" />
+                  <ComboBox fx:id="selectMesInicial" layoutX="98.0" layoutY="59.0" prefWidth="150.0" />
+                  <Label layoutX="291.0" layoutY="59.0" prefHeight="25.0" prefWidth="66.0" text="MES FINAL:" />
+                  <ComboBox fx:id="selectMesFinal" layoutX="357.0" layoutY="59.0" prefWidth="150.0" />
+                  <Button fx:id="btnGenerarReporte" layoutX="1014.0" layoutY="59.0" mnemonicParsing="false" onAction="#eventGenerarReporte" prefHeight="25.0" prefWidth="158.0" text="GENERAR REPORTE" />
+                  <CheckBox fx:id="checkAllYear" layoutX="15.0" layoutY="17.0" mnemonicParsing="false" text="TODO LOS MESES" />
+                  <Button fx:id="btnLimpiarFormulario" layoutX="1014.0" layoutY="22.0" mnemonicParsing="false" onAction="#eventLimpiarFormulario" prefHeight="25.0" prefWidth="158.0" text="LIMPIAR FORMULARIO" />
+                  <RadioButton fx:id="btnBoxAllTypeDatos" layoutX="839.0" layoutY="17.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="TODOS LOS DATOS " />
+                  <RadioButton fx:id="btnBoxFacturas" layoutX="839.0" layoutY="39.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="POR FACTURACION" />
+                  <RadioButton fx:id="btnBoxNotasDeCredito" layoutX="839.0" layoutY="63.0" mnemonicParsing="false" onAction="#desabilitarCampos" text="POR NOTAS DE CREDITO" />
+                  <Label layoutX="150.0" layoutY="14.0" prefHeight="25.0" prefWidth="54.0" text="BUSCAR:" />
+                  <TextField fx:id="txtBuscarList" layoutX="204.0" layoutY="14.0" prefHeight="25.0" prefWidth="295.0" />
+               </children></AnchorPane>
+          <AnchorPane>
+               <children>
+                  <TableView fx:id="tblReportes" editable="true" layoutX="1.0" layoutY="-2.0" prefHeight="441.0" prefWidth="1199.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="clmnItem" prefWidth="50.0" text="ITEM" />
+                      <TableColumn fx:id="clmnDescripcion" prefWidth="95.0" text="DESCRIPCION" />
+                        <TableColumn fx:id="clmnLaboratorio" prefWidth="90.0" text="LABORATORIO" />
+                        <TableColumn fx:id="clmnLote" prefWidth="69.0" text="LOTE" />
+                        <TableColumn fx:id="clmnFechaDeVencimiento" prefWidth="179.0" text="FECHA DE VENCIMIENTO" />
+                        <TableColumn fx:id="clmnLinea" prefWidth="96.0" text="LINEA" />
+                        <TableColumn fx:id="clmnCentroDeCosto" minWidth="0.0" prefWidth="67.0" text="CENTRO DE COSTO" />
+                        <TableColumn fx:id="clmnSede" prefWidth="71.0" text="SEDE" />
+                        <TableColumn fx:id="clmnTipo" prefWidth="86.0" text="TIPO" />
+                        <TableColumn fx:id="clmnCantidadDeInventario" prefWidth="118.0" text="CANTIDAD INVENTARIO" />
+                        <TableColumn fx:id="clmnCantidadFactura" prefWidth="93.0" text="CANT. FACTURADA" />
+                        <TableColumn fx:id="clmnCantidadNotasDeCredito" prefWidth="112.0" text="CANT. NOTAS DE CREDITO" />
+                        <TableColumn fx:id="clmnCantidadConsumo" prefWidth="62.0" text="CONSUMO" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+      <Label layoutX="533.0" layoutY="6.0" prefHeight="25.0" prefWidth="110.0" text="GENERAR REPORTE" />
+   </children>
 </AnchorPane>

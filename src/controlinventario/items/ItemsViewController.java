@@ -23,27 +23,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author auxsistemas3
  */
 public class ItemsViewController implements Initializable {
-
-    @FXML
-    private TableColumn<ExcelModel, Integer> clmnCantidadPorItem;
-
     @FXML
     private TableColumn<ExcelModel, String> clmnDescripcion;
-
     @FXML
     private TableColumn<ExcelModel, String> clmnFechaDeVencimiento;
-
     @FXML
-    private TableColumn<ExcelModel, String> clmnItem;
-
+    private TableColumn<ExcelModel, Integer> clmnItem;
     @FXML
     private TableColumn<ExcelModel, String> clmnLote;
-
-    @FXML
-    private TableColumn<ExcelModel, String> clmnNombre;
-
     @FXML
     private TableView<ExcelModel> tblItems;
+    @FXML
+    private TableColumn<ExcelModel, String> clmnLaboratorio;
+    @FXML
+    private TableColumn<ExcelModel, Integer> clmnCantidad;
+    @FXML
+    private TableColumn<ExcelModel, String> clmnLinea;
+    @FXML
+    private TableColumn<ExcelModel, Integer> clmnCentroDeCosto;
+    @FXML
+    private TableColumn<ExcelModel, String> clmnSede;
+    @FXML
+    private TableColumn<ExcelModel, String> clmnTipo;
 
     /**
      * Initializes the controller class.
@@ -61,13 +62,18 @@ public class ItemsViewController implements Initializable {
         try {
             tblItems.getItems().clear();
             if (!data.isEmpty()) {
+                System.err.println(data.isEmpty());
                 tblItems.setItems(data);
-                clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));
-                clmnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+                clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));               
                 clmnDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+                clmnLaboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));
                 clmnLote.setCellValueFactory(new PropertyValueFactory<>("lote"));
                 clmnFechaDeVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechaDeVencimiento"));
-                clmnCantidadPorItem.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+                clmnCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+                clmnLinea.setCellValueFactory(new PropertyValueFactory<>("linea"));
+                clmnCentroDeCosto.setCellValueFactory(new PropertyValueFactory<>("centroDeCosto"));
+                clmnSede.setCellValueFactory(new PropertyValueFactory<>("sede"));
+                clmnTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
             }
         } catch (Exception ex) {
             Logger.getLogger(ItemsViewController.class.getName()).log(Level.SEVERE,

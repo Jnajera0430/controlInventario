@@ -103,7 +103,7 @@ public class InicioController implements Initializable {
     @FXML
     void eventVerReporte(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/reportes/reportesView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/reportes/reportesView.fxml"));            
             Parent root = loader.load();
             ReportesController  controller = loader.getController();
             Scene scene = new Scene(root);
