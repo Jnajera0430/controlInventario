@@ -4,18 +4,23 @@
  */
 package controlinventario.reportes;
 
+import controlinventario.CreateExcel;
 import controlinventario.Interfaces.ReporteModel;
 import controlinventario.absControlInventario.AbsControlInventario;
 import controlinventario.absControlInventario.AbsSentenciasSQL;
+import controlinventario.absControlInventario.DatosRequeridoEnum;
 import controlinventario.items.ItemsViewController;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -26,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -33,8 +39,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author auxsistemas3
  */
 public class ReportesController extends AbsControlInventario implements Initializable {
+
     ObservableList<ReporteModel> dataReport = FXCollections.observableArrayList();
-    AbsSentenciasSQL sentencias = new AbsSentenciasSQL();
+    CreateExcel crearExcel = new CreateExcel();
     @FXML
     private ComboBox<?> selectMesInicial;
     @FXML
@@ -98,6 +105,31 @@ public class ReportesController extends AbsControlInventario implements Initiali
 
     @FXML
     private void eventGenerarReporte(ActionEvent event) {
+        try {
+            String rutaTemporal = crearExcel.createNewEcxel(dataReport);
+            String[] arrayArchivo = rutaTemporal.split("/");
+            String nombreArchivo = arrayArchivo[arrayArchivo.length - 1].split("\\.")[0];
+            File archivo = new File(rutaTemporal);
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Guardar archivo");
+            fileChooser.setInitialFileName(nombreArchivo);
+
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Archivos Excel (*.xlsx)", "*.xlsx");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File destino = fileChooser.showSaveDialog(btnGenerarReporte.getScene().getWindow());
+            if (destino != null) {
+                // Copia el archivo temporal al destino seleccionado
+                Files.copy(archivo.toPath(), destino.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("El archivo Excel se ha descargado correctamente en: " + destino.getAbsolutePath());
+
+                // Elimina el archivo temporal después de la descarga
+                archivo.delete();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ReportesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -158,18 +190,47 @@ public class ReportesController extends AbsControlInventario implements Initiali
         eventOnChangedQueGeneraElReporte();
     }
 
-    public void eventOnChangedQueGeneraElReporte() {        
-        System.err.println("select MES FINAL: "+selectMesFinal.getValue());
-        System.err.println("select MES INICIAL: "+selectMesInicial.getValue());
-        System.err.println("check TODO LOS MESES: "+checkAllYear.isSelected());
-        System.err.println("btn TIPO DE DATO: "+btnBoxAllTypeDatos.isSelected());
+    public void eventOnChangedQueGeneraElReporte() {
+        AbsSentenciasSQL sentencias = new AbsSentenciasSQL();
+        String mesInicial = "", mesFinal = "";
+        System.err.println("select MES FINAL: " + selectMesFinal.getValue());
+        System.err.println("select MES INICIAL: " + selectMesInicial.getValue());
+        System.err.println("check TODO LOS MESES: " + checkAllYear.isSelected());
+        System.err.println("btn TIPO DE DATO: " + btnBoxAllTypeDatos.isSelected());
+        System.err.println("btn POR FACTURAS" + btnBoxFacturas.isSelected());
+        System.err.println("btn POR NOTAS DE CREDITO" + btnBoxNotasDeCredito.isSelected());
         System.err.println("-------------------------------------------------");
-        
-        if(checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()){
+
+        if (checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()) {
             dataReport = sentencias.todosLosDatosConTodosLosMeses();
         }
-        
-        
+        if (checkAllYear.isSelected() && btnBoxFacturas.isSelected()) {
+            dataReport = sentencias.facturacionesConTodosLosMeses();
+        }
+        if (checkAllYear.isSelected() && btnBoxNotasDeCredito.isSelected()) {
+            dataReport = sentencias.notasDeCreditoConTodosLosMeses();
+        }
+
+        if (selectMesInicial.getValue() != null) {
+            mesInicial = selectMesInicial.getValue().toString();
+        }
+        if (selectMesFinal.getValue() != null) {
+            mesFinal = selectMesFinal.getValue().toString();
+        }
+
+        if (!checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()) {
+            dataReport = sentencias.tipoDeDatoConRangoDeMeses(DatosRequeridoEnum.TODOS_LOS_DATOS,
+                    mesInicial, mesFinal);
+        }
+        if (!checkAllYear.isSelected() && btnBoxNotasDeCredito.isSelected()) {
+            dataReport = sentencias.tipoDeDatoConRangoDeMeses(DatosRequeridoEnum.POR_NOTASCREDITO,
+                    mesInicial, mesFinal);
+        }
+        if (!checkAllYear.isSelected() && btnBoxFacturas.isSelected()) {
+            dataReport = sentencias.tipoDeDatoConRangoDeMeses(DatosRequeridoEnum.POR_FACTURAS,
+                    mesInicial, mesFinal);
+        }
+        System.err.println("DataReport: " + dataReport.isEmpty());
         listar();
     }
 
@@ -182,18 +243,18 @@ public class ReportesController extends AbsControlInventario implements Initiali
 
     @Override
     public void listar() {
-        for(ReporteModel dato : dataReport){
-            System.err.print("item: " + dato.getItem() + "cantidadEnElInventario: " + dato.getCantidadEnElInventario() );
+        for (ReporteModel dato : dataReport) {
+            System.err.print("item: " + dato.getItem() + "cantidadEnElInventario: " + dato.getCantidadEnElInventario());
             System.err.print(" Facturada: " + dato.getCantidadEnLaFatura() + " Notas de credito: " + dato.getCantidadEnLaNotaCredito());
-            System.err.print(" Consumo: "+ dato.getConsumo());
+            System.err.print(" Consumo: " + dato.getConsumo());
             System.err.println("");
         }
-        
+
         try {
             tblReportes.getItems().clear();
-            if (!dataReport.isEmpty()) {               
+            if (!dataReport.isEmpty()) {
                 tblReportes.setItems(dataReport);
-                clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));               
+                clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));
                 clmnDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
                 clmnLaboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));
                 clmnLote.setCellValueFactory(new PropertyValueFactory<>("lote"));
