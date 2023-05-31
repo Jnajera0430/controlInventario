@@ -4,9 +4,8 @@
  */
 package controlinventario.absControlInventario;
 
-/**
- *
- * @author auxsistemas3
+/*
+    enumerados que espicifica el tipo de datos que se requiere para el archivo
  */
 public enum DatosRequeridoEnum {
     TODOS_LOS_DATOS("TODOS_LOS_DATOS"),

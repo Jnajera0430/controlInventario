@@ -52,6 +52,8 @@ import javafx.stage.Stage;
  */
 public class FacturacionController extends AbsControlInventario implements Initializable {
 
+    //se inicializan las variables observableList, las clase ExcelParser, ModifyExcel 
+    //y los datos de los archivos seleccionado
     ObservableList<ExcelModel> dataExcel = FXCollections.observableArrayList();
     ObservableList<ExcelModel> dataExcelFactura = FXCollections.observableArrayList();
     ExcelParser excelParser = new ExcelParser();
@@ -96,17 +98,16 @@ public class FacturacionController extends AbsControlInventario implements Initi
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO      
+        // apenas se cargue la vista se ejecutan los siguientes metodos     
         protegerArchivo();
         listarMeses();
-
         listar();
-
         obtenerItemsDelArchivo();
     }
 
     @FXML
     private void eventCargaDeArch(ActionEvent event) {
+        //la clase FileChooser se utiliza para cargar un archivo
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar archivo");
 
@@ -116,7 +117,10 @@ public class FacturacionController extends AbsControlInventario implements Initi
 
         // Mostrar el diálogo de selección de archivo
         Stage stage = null;
+
+        //se muestra la pantalla
         archivoSeleccionado = fileChooser.showOpenDialog(stage);
+        //se obtienen los datos de los archivos obtenidos
         if (archivoSeleccionado != null) {
             nomArchSeleccionado = archivoSeleccionado.getName();
             rutaArchSelecccionado = archivoSeleccionado.getPath();
@@ -126,45 +130,67 @@ public class FacturacionController extends AbsControlInventario implements Initi
 
     @FXML
     private void eventSubirArch(ActionEvent event) {
+        //se validad los datos del archivo
         validate.archivoVacio(nomArchSeleccionado);
+        //se valida si el archivo tiene nombre
         if (nomArchSeleccionado != null) {
             try {
+                //se obtiene el nombre del archivo
                 String[] separarNombre = nomArchSeleccionado.split("\\.");
                 String nombre = separarNombre[0], ext = separarNombre[1],
                         mes = (String) selectMes.getValue();
-                File copiaDestino = new File(rutaArchSelecccionado);
-
+                //File copiaDestino = new File(rutaArchSelecccionado);
+                //ruta donde se va a guardar
                 String rutaCarpeta = "C:/Users/auxsistemas3/Desktop/controlDeinventarios/";
+                //se obtiene la fecha para concatenar con el nombre
                 Date fecha = new Date(System.currentTimeMillis());
                 SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 String fechaFormateada = formato.format(fecha).replaceAll("/",
                         "").replaceAll(" ", "").replaceAll(":", "");
+                //se obtiene los datos del archivo seleccionado
                 File archivoOriginal = new File(rutaArchSelecccionado);
+                //se formatea el nomrbre del archivo
                 String nombreArchivoFormateado = fechaFormateada + nomArchSeleccionado;
+                //se obtiene la carpeta destino
                 File carpetaDestino = new File(rutaCarpeta);
+                //se crea  el archivo en la carpeta destino
                 File archivoCopia = new File(carpetaDestino, nombreArchivoFormateado);
+                //se realiza una copia del archivo seleccionado dentro del archivo creado en la carpeta destino
                 Files.copy(archivoOriginal.toPath(), archivoCopia.toPath(),
                         StandardCopyOption.REPLACE_EXISTING);
+                //se crea un modelo de la tabla facturas
                 ArchivoModel modelArch = new ArchivoModel(nombre, ext, archivoCopia.getPath(), mes);
+                //query para insertar datos
                 String sql = "INSERT INTO facturacion(nombre,extension,rutas,mes) VALUES(?,?,?,?)";
+                //se crea la declaracion
                 PreparedStatement statement = conn.prepareStatement(sql);
+                //se añaden los parametros de la query
                 statement.setString(1, modelArch.getNombre());
                 statement.setString(2, modelArch.getExt());
                 statement.setString(3, modelArch.getRuta());
                 statement.setString(4, modelArch.getMes());
+                //se ejecuta las query
                 statement.executeUpdate();
                 System.out.println("Se subió");
+                //se manda el mesaje de esxito
                 validate.archGuardado();
-                listar();
+                //query para obtener la ruta del inventario
                 String sql2 = "SELECT * FROM inventarioinicial WHERE estado = true";
+                //se crea la declaracion
                 Statement statement2 = conn.createStatement();
+                //se ejecuta la query
                 ResultSet result = statement2.executeQuery(sql2);
+                //se obtienen los resultado
                 while (result.next()) {
+                    //se crea un objeto de la tabla inventario
                     ArchivoModel dataArch = new ArchivoModel(result.getString("nombre"),
                             result.getInt("id"), result.getString("extension"),
                             result.getString("rutas"), result.getString("fechaEmision"),
                             result.getBoolean("estado"), result.getString("mes"));
+
+                    //se lee el archiv con la ruta
                     dataExcelFactura = excelParser.parseExcel(archivoCopia.getPath());
+                    //se modifica el inventario
                     modificarExcel.modicarExcel(dataArch.getRuta(), dataExcelFactura, TypeProcessEnum.SALIDA);
                 }
 
@@ -175,23 +201,28 @@ public class FacturacionController extends AbsControlInventario implements Initi
             }
 
         }
-
+        //se lista los datos
+        listar();
+        //se limpia los archivos
         limpiarFormulario();
     }
 
     @FXML
     private void eventLimpiarForm(ActionEvent event) {
+        //se limpia los inputs
         limpiarFormulario();
     }
 
     @FXML
     private void eventLimpiarYCerrar(ActionEvent event) {
+        //se limpia y se cierra la ventana
         limpiarFormulario();
         closeWindow();
     }
 
     @Override
     public void listarMeses() {
+        //se listan los meses en el input tipo select
         ObservableList mesesList = mesesList();
         if (mesesList != null) {
             this.selectMes.setItems(mesesList);
@@ -203,32 +234,33 @@ public class FacturacionController extends AbsControlInventario implements Initi
     public void listar() {
 
         try {
+            //se limpia la tabla
             tblFacturacion.getItems().clear();
+            //se obtienen los datos de la base datos
             String sql = "SELECT * FROM facturacion";
+            //se crea la declaracion
             Statement statement = conn.createStatement();
-            ResultSet result = statement.executeQuery(sql);
 
+            //se almacenan los datos
+            ResultSet result = statement.executeQuery(sql);
+            //se recorren todos los datos
             while (result.next()) {
+                //se crea un objeto de la tabla
                 ArchivoModel dataArch = new ArchivoModel(result.getString("nombre"),
                         result.getInt("id"), result.getString("extension"),
                         result.getString("rutas"), result.getString("fechaEmision"),
                         result.getBoolean("estado"), result.getString("mes"));
-
-                String sqlXarch = "SELECT rutas FROM facturacion WHERE id = ?";
-                PreparedStatement statementXarch = conn.prepareStatement(sqlXarch);
-                statementXarch.setInt(1, dataArch.getId());
-                ResultSet resultXarch = statementXarch.executeQuery();
-
-                while (resultXarch.next()) {
-                    String ruta = resultXarch.getString("rutas");
-                    ObservableList<ExcelModel> datos = excelParser.parseExcel(ruta);
-
-                    dataArch.AsignarCantidad(datos.size());
-                }
+                //se lee el archivo por la ruta
+                ObservableList<ExcelModel> datos = excelParser.parseExcel(dataArch.getRuta());
+                //se asigana la cantidad de item en dataArch
+                dataArch.AsignarCantidad(datos.size());
+                //se añade a la var observable
                 listArch.add(dataArch);
             }
             if (!listArch.isEmpty()) {
+                //se añade la lista a la tabla
                 tblFacturacion.setItems(listArch);
+                //se ordenan los campos
                 clmnId.setCellValueFactory(new PropertyValueFactory<>("id"));
                 clmnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
                 clmnExt.setCellValueFactory(new PropertyValueFactory<>("ext"));
@@ -244,13 +276,16 @@ public class FacturacionController extends AbsControlInventario implements Initi
 
     @Override
     public void closeWindow() {
+        //metodo para cerrar las vistas
         Stage stageInventario = (Stage) this.btnLimpiarYCerrar.getScene().getWindow();
         stageInventario.close();
     }
 
     @Override
     public void protegerArchivo() {
+        //metodo para desabilitar los input
         txtArchivoSelect.setDisable(true);
+        //se crea un evento para desbiliatar los eventos
         txtArchivoSelect.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
                 btnCargaArch.setDisable(false);
@@ -263,21 +298,31 @@ public class FacturacionController extends AbsControlInventario implements Initi
 
     @Override
     public void limpiarFormulario() {
+        //se limpia los input
         txtArchivoSelect.setText("");
         ArchivoModel archivoModel = new ArchivoModel();
     }
 
     @FXML
     private void eventVerPorItem(ActionEvent event) {
+        //metodo para cargar la vista por item
         try {
+            //se carga la vista
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/controlinventario/items/ItemsView.fxml"));
+            // se crea una anclaje y se carga
             Parent root = loader.load();
+            //se obtienne el controlador de la vista
             ItemsViewController controller = loader.getController();
+            //se ejecuta el metodo listar
             controller.listar(dataExcel);
+            //se crea la escena y se ancla
             Scene scene = new Scene(root);
+            //se crea un escenario
             Stage stage = new Stage();
+            //se muestra
             stage.setScene(scene);
             stage.show();
+            //se limpia la seleccion
             tblFacturacion.getSelectionModel().clearSelection();
         } catch (IOException ex) {
             Logger.getLogger(FacturacionController.class
@@ -287,6 +332,7 @@ public class FacturacionController extends AbsControlInventario implements Initi
 
     @Override
     public void obtenerItemsDelArchivo() {
+        //evento que selecciona el archivo para mostrar los item
         tblFacturacion.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection,
                 newSelection) -> {
             if (newSelection != null) {

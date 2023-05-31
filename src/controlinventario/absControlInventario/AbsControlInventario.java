@@ -7,9 +7,8 @@ package controlinventario.absControlInventario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-/**
- *
- * @author auxsistemas3
+/*
+   clase abstracta que comprate todos los metodos 
  */
 public abstract class AbsControlInventario {
 
@@ -18,16 +17,14 @@ public abstract class AbsControlInventario {
     abstract public void closeWindow();
 
     abstract public void listarMeses();
-    
+
     abstract public void protegerArchivo();
-    
+
     abstract public void limpiarFormulario();
-    
-    /**
-     *
-     */
-    public void obtenerItemsDelArchivo(){};
-    
+
+    public void obtenerItemsDelArchivo() {
+    }
+    //metodo que se utiliza para devolver una var observableList con los meses
     public ObservableList mesesList() {
         ObservableList mesesList = FXCollections.observableArrayList();
         mesesList.add("ENERO");

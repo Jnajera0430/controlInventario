@@ -106,17 +106,24 @@ public class ReportesController extends AbsControlInventario implements Initiali
     @FXML
     private void eventGenerarReporte(ActionEvent event) {
         try {
+            //se obtiene la ruta temporal
             String rutaTemporal = crearExcel.createNewEcxel(dataReport);
+
+            //se obtiene el nombre del archivo
             String[] arrayArchivo = rutaTemporal.split("/");
             String nombreArchivo = arrayArchivo[arrayArchivo.length - 1].split("\\.")[0];
+            //se crea un File del archivo con path de la ruta temporal
             File archivo = new File(rutaTemporal);
-
+            //se utiliza FileChooser para generar un dialogo con el usuario y que pueda descargar en su directorio
             FileChooser fileChooser = new FileChooser();
+            //se modifica la ventana de dialogo
             fileChooser.setTitle("Guardar archivo");
             fileChooser.setInitialFileName(nombreArchivo);
-
+            //se filtran las extensiones del archivo
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Archivos Excel (*.xlsx)", "*.xlsx");
             fileChooser.getExtensionFilters().add(extFilter);
+
+            //se abre la ventana
             File destino = fileChooser.showSaveDialog(btnGenerarReporte.getScene().getWindow());
             if (destino != null) {
                 // Copia el archivo temporal al destino seleccionado
@@ -137,61 +144,73 @@ public class ReportesController extends AbsControlInventario implements Initiali
     }
 
     public void valoresPredeterminado() {
+        //se colocan los valores predeterminado
         checkAllYear.setSelected(true);
         btnBoxAllTypeDatos.setSelected(true);
     }
 
     public void desabilitarCampos() {
+        //hay algunnos valores predeterminado py estos desactivan algunos valores automaticamente 
         if (checkAllYear.isSelected()) {
             selectMesInicial.setDisable(true);
             selectMesFinal.setDisable(true);
         }
+        //evento que verifica el input tipo checkBox
         checkAllYear.selectedProperty().addListener((observable, oldValue, newValue) -> {
+
             if (!newValue) {
+                //se hablitan los input tipo select
                 selectMesInicial.setDisable(false);
                 selectMesFinal.setDisable(false);
             } else {
+                //se desabilitan los input tipo select
                 selectMesInicial.setDisable(true);
                 selectMesFinal.setDisable(true);
             }
+            //se activa el evento que genera el reporte
             eventOnChangedQueGeneraElReporte();
         });
-
+        //se activa el evento del input tipo select mes inicial
         selectMesInicial.setOnAction(event -> {
             var selectedValue = selectMesInicial.getSelectionModel().getSelectedItem();
+            //se activa el evento que genera el reporte
             eventOnChangedQueGeneraElReporte();
         });
-
+        //se activa el evento del input tipo select mes final
         selectMesFinal.setOnAction(event -> {
             var selectedValue = selectMesFinal.getSelectionModel().getSelectedItem();
+            //se activa el evento que genera el reporte
             eventOnChangedQueGeneraElReporte();
         });
-
+        //se activa el evento que radiobutton TODOS_LOS_DATOS
         btnBoxAllTypeDatos.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnBoxFacturas.setSelected(false);
                 btnBoxNotasDeCredito.setSelected(false);
             }
         });
-
+        //se activa el evento que radiobutton FACTURAS
         btnBoxFacturas.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnBoxAllTypeDatos.setSelected(false);
                 btnBoxNotasDeCredito.setSelected(false);
             }
         });
-
+        //se activa el evento que radiobutton NOTAS_DE_CREDITO
         btnBoxNotasDeCredito.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnBoxFacturas.setSelected(false);
                 btnBoxAllTypeDatos.setSelected(false);
             }
         });
+        //se activa el evento que genera el reporte
         eventOnChangedQueGeneraElReporte();
     }
 
     public void eventOnChangedQueGeneraElReporte() {
+        //se crea el objeto de sentencias
         AbsSentenciasSQL sentencias = new AbsSentenciasSQL();
+        //var inicializan las var que obtienen los meses 
         String mesInicial = "", mesFinal = "";
         System.err.println("select MES FINAL: " + selectMesFinal.getValue());
         System.err.println("select MES INICIAL: " + selectMesInicial.getValue());
@@ -200,7 +219,7 @@ public class ReportesController extends AbsControlInventario implements Initiali
         System.err.println("btn POR FACTURAS" + btnBoxFacturas.isSelected());
         System.err.println("btn POR NOTAS DE CREDITO" + btnBoxNotasDeCredito.isSelected());
         System.err.println("-------------------------------------------------");
-
+        //se verifican los datos para generar el reporte 
         if (checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()) {
             dataReport = sentencias.todosLosDatosConTodosLosMeses();
         }
@@ -231,11 +250,13 @@ public class ReportesController extends AbsControlInventario implements Initiali
                     mesInicial, mesFinal);
         }
         System.err.println("DataReport: " + dataReport.isEmpty());
+        //se lista el reporte
         listar();
     }
 
     @Override
     public void listarMeses() {
+        //se obtienen la lista de los meses
         ObservableList mesesList = mesesList();
         this.selectMesFinal.setItems(mesesList);
         this.selectMesInicial.setItems(mesesList);
@@ -243,6 +264,8 @@ public class ReportesController extends AbsControlInventario implements Initiali
 
     @Override
     public void listar() {
+        
+        
         for (ReporteModel dato : dataReport) {
             System.err.print("item: " + dato.getItem() + "cantidadEnElInventario: " + dato.getCantidadEnElInventario());
             System.err.print(" Facturada: " + dato.getCantidadEnLaFatura() + " Notas de credito: " + dato.getCantidadEnLaNotaCredito());
@@ -251,9 +274,12 @@ public class ReportesController extends AbsControlInventario implements Initiali
         }
 
         try {
+            //se limpia la tabla
             tblReportes.getItems().clear();
             if (!dataReport.isEmpty()) {
+                //se añade la lista a la tabla
                 tblReportes.setItems(dataReport);
+                //se ordenan los campos
                 clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));
                 clmnDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
                 clmnLaboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));

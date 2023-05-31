@@ -20,11 +20,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author auxsistemas3
  */
 public class CreateExcel {
-
+    //metodo utlizado para crear reportes en formato excel
     public String createNewEcxel(ObservableList<ReporteModel> dataReport) {
+        //se abre un nuevo libro vacio
         Workbook workbook = new XSSFWorkbook();
+        //se crea una nueva hoja
         Sheet sheet = workbook.createSheet("Reporte");
+        //se obtiene la primera fila
         Row headerRow = sheet.createRow(0);
+        //se crean las columnas
         headerRow.createCell(0).setCellValue("ITEM");
         headerRow.createCell(1).setCellValue("DESCRIPCION");
         headerRow.createCell(2).setCellValue("LABORATORIO");
@@ -38,7 +42,7 @@ public class CreateExcel {
         headerRow.createCell(10).setCellValue("CANTIDAD EN LA FACTURA");
         headerRow.createCell(11).setCellValue("CANTIDAD EN LA NOTAS DE FACTURA");
         headerRow.createCell(12).setCellValue("CONSUMO");
-
+        //se comienza a llenar los datos despues de la primera fila
         int rowNum = 1;
         for (ReporteModel data : dataReport) {
             Row row = sheet.createRow(rowNum++);
@@ -56,13 +60,18 @@ public class CreateExcel {
             row.createCell(11).setCellValue(data.getCantidadEnLaNotaCredito());
             row.createCell(12).setCellValue(data.getConsumo());
         }
+        //se obtiene la fecha formateada para unir con el nombre del archivo 
         Date fecha = new Date(System.currentTimeMillis());
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String fechaFormateada = formato.format(fecha).replaceAll("/",
                 "").replaceAll(" ", "").replaceAll(":", "");
+        //se concatena el nombre con la fecha
         String nombreArchivo = fechaFormateada+"Reportes.xlsx";
+        //se obtiene el path de la carpeta temporal
         String rutaTemporal = System.getProperty("java.io.tmpdir") + nombreArchivo;
+        //se crea el conducto del archivo en la carpeta temporal
         try ( FileOutputStream fileOut = new FileOutputStream(rutaTemporal)) {
+            //se sobre escribe el archivo
             workbook.write(fileOut);
             System.out.println("El archivo Excel se ha generado correctamente en la ubicación temporal.");
         } catch (IOException e) {

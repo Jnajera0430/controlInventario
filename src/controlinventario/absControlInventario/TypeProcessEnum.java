@@ -4,9 +4,8 @@
  */
 package controlinventario.absControlInventario;
 
-/**
- *
- * @author auxsistemas3
+/*
+    enumerado que sirve para identificar el tipo del proceso por facturas o notas
  */
 public enum TypeProcessEnum {
     INGRESO("INGRESO"),

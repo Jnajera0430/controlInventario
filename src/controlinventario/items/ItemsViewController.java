@@ -1,11 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
+
 package controlinventario.items;
 
 import controlinventario.Interfaces.ExcelModel;
-import controlinventario.inventario.InventarioController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -60,10 +56,12 @@ public class ItemsViewController implements Initializable {
 
     public void listar(ObservableList<ExcelModel> data) {
         try {
+            //se limpia la tabla
             tblItems.getItems().clear();
             if (!data.isEmpty()) {
-                System.err.println(data.isEmpty());
+                //se añade la lista a la tabla
                 tblItems.setItems(data);
+                //se ordenan los campos 
                 clmnItem.setCellValueFactory(new PropertyValueFactory<>("item"));               
                 clmnDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
                 clmnLaboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));

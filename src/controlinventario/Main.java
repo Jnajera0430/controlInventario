@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package controlinventario;
 
 import javafx.application.Application;
@@ -14,7 +10,7 @@ import javafx.stage.Stage;
  *
  * @author auxsistemas3
  */
-public class Main extends Application{
+public class Main extends Application {
 
     /**
      * @param args the command line arguments
@@ -26,13 +22,15 @@ public class Main extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        
+        //Metodo que se encarga de abrir la vista principal
+        //se crea un pane principal y se carga la pantalla
         AnchorPane root = (AnchorPane) FXMLLoader.load(
                 getClass().getResource("Inicio.fxml"));
+        //Se crea la ecena
         Scene scene = new Scene(root);
+        //Se crea y se muestra el escenario
         stage.setScene(scene);
-        
         stage.show();
     }
-    
+
 }
