@@ -9,10 +9,12 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- *
- * @author auxsistemas3
- */
+/*
+    Clase modelo de las estructuras de los archivos contienen su metodos setter y getter 
+    sus propiedades son del tipoProperty y estan inicializados en susu contructores
+    el constructor  que no recibe parametros vuelve las propiedades null
+
+*/
 public class ExcelModel {
 
     private final IntegerProperty item;

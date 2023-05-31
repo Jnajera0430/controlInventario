@@ -26,12 +26,16 @@ public class ConexionMysql {
 
     public ConexionMysql() {
         try {
+            //se obtiene la ruta del archivo creedenciales
             Path filePath = Paths.get("extra/credenciales.txt");
+            //se lee el archivo
             List<String> lines = Files.readAllLines(filePath);
-
+            //se saca el string connect
             for (String line : lines) {
                 this.url = line;
             }
+            //Se crea la conexion utilizando el driver jdbc de mysql
+            //antes se verifica el archivo credenciales si esta correcto
             if (url == null) {
                 alert.setHeaderText("Driver of connection not found");
                 alert.setTitle("Error: ");
@@ -39,7 +43,9 @@ public class ConexionMysql {
                         + " modify your credentials");
                 alert.showAndWait();
             }
+            //se obtiene el driver
             Class.forName("com.mysql.cj.jdbc.Driver");
+            //se crea la conexion
             conn = DriverManager.getConnection(url);
             System.out.println("db conectada");
         } catch (ClassNotFoundException | SQLException | IOException ex) {
