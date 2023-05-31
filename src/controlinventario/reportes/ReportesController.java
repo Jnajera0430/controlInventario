@@ -16,6 +16,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -208,6 +210,8 @@ public class ReportesController extends AbsControlInventario implements Initiali
     }
 
     public void eventOnChangedQueGeneraElReporte() {
+        // Crear un ExecutorService con un pool de hilos fijo
+        ExecutorService executor = Executors.newFixedThreadPool(1);
         //se crea el objeto de sentencias
         AbsSentenciasSQL sentencias = new AbsSentenciasSQL();
         //var inicializan las var que obtienen los meses 
@@ -219,6 +223,7 @@ public class ReportesController extends AbsControlInventario implements Initiali
         System.err.println("btn POR FACTURAS" + btnBoxFacturas.isSelected());
         System.err.println("btn POR NOTAS DE CREDITO" + btnBoxNotasDeCredito.isSelected());
         System.err.println("-------------------------------------------------");
+        
         //se verifican los datos para generar el reporte 
         if (checkAllYear.isSelected() && btnBoxAllTypeDatos.isSelected()) {
             dataReport = sentencias.todosLosDatosConTodosLosMeses();
